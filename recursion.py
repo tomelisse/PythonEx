@@ -44,3 +44,21 @@ def unflatten_dict(d):
             if True in ['.' in sub_k for sub_k in v.keys()]:
                 result[k] = unflatten_dict(v)
     return result
+
+def tree_reverse(l):
+    ''' reverses a nested list '''
+    result = list(reversed(l))
+    for i, x in enumerate(result):
+        if isinstance(x, list):
+            result[i] = tree_reverse(x)
+    return result
+
+def tree_map(function, l):
+    ''' map a function over a nested list '''
+    result = []
+    for x in l:
+        if isinstance(x, list):
+            result.append(tree_map(function, x))
+        else:
+            result.append(function(x))
+    return result
