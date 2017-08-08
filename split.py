@@ -1,24 +1,22 @@
 from __future__ import print_function
+from itertools import islice
+from math import ceil
 
-def readlines(infile):
-    ''' generates all the lines in the file '''
-    return (line for line in open(infile))
+def read_n_lines(infile, i, n):
+    ''' generates n lines from i to i + n '''
+    return islice(open(infile), i, i+n)
 
-def read_n_lines(infile, n):
-    ''' generates n lines at a time '''
-    i = 0
-    n_lines = []
-    for line in open(infile):
-        n_lines.append(line)
-        i += 1
-        if i%n == 0:
-            yield n_lines
-            n_lines = []
+def read_n_lines_packages(infile, n):
+    ''' generates packages of n lines each '''
+    nof_lines = sum(1 for line in open(infile))
+    nof_files = int(ceil(float(nof_lines)/float(n)))
+    for i in range(nof_files):
+        yield read_n_lines(infile, i*n, n)
 
 def split(infile, n):
     ''' splits the file into multiple files, up to n lines each '''
     lastindex = infile.rfind('/')
-    lines = read_n_lines(infile, n)
+    lines = read_n_lines_packages(infile, n)
     for i, nlines in enumerate(lines):
         outfilename = infile[:lastindex]+'/out_'+ str(i) +'.py'
         outfile = open(outfilename,'w')

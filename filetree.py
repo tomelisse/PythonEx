@@ -35,5 +35,23 @@ def numPy(path, n=0):
             n += numPy(path, n)
     return n
 
+def howmanyLines(file):
+    ''' returns the numer of lines in the file '''
+    return sum(1 for line in open(file)) 
+
+def howmanySignificantLines(file):
+    ''' returns the number of lines in the file, ignores empty and comment lines '''
+    return sum(1 for line in open(file) if line != '\n' and not line.strip().startswith('#')) 
+
+
+def numLines(path, n = 0):
+    ''' computes the numer of all lines in all files in the directory tree '''
+    paths = findpaths(path)
+    for path in paths:
+        if isfile(path):
+            n += howmanySignificantLines(path)
+        else:
+            n += numLines(path, n)
+    return n
 
 
