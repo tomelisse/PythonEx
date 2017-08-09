@@ -1,3 +1,17 @@
+from os import listdir
+from os.path import isfile
+
+def trace(f):
+    ''' decorator for tracing function calls '''
+    f.indent = 0
+    def g(x):
+        print f.indent*'| ' + '|--' ,f.__name__, x
+        f.indent += 1
+        value = f(x)
+        print f.indent*'| ' + '|--','return ', value
+        return value
+    return g
+
 def product(a,b):
     ''' multiplies 2 numbers recursively, using only + and - '''
     if b == 0:
@@ -62,3 +76,42 @@ def tree_map(function, l):
         else:
             result.append(function(x))
     return result
+
+def path_name(path, item):
+    ''' returns path of the item '''
+    return path + "/" + item
+
+def dirtree(path):
+    ''' prints all the files in the given directory tree '''
+    if isfile(path):
+        print path
+    else:
+        for item in listdir(path):
+            item_path = path_name(path, item)
+            dirtree(item_path)
+
+def count_change(amount, coins):
+    ''' computes the number of ways to change the given amount of money '''
+    if amount == 0:
+        return 1
+    if amount < 0:
+        return 0
+    result = 0
+    for i, coin in enumerate(coins):
+        result += count_change(amount-coin,coins[i:])
+    return result
+
+@trace
+def permute(l):
+    ''' computes all possible permutations of the given list '''
+    results = []
+    if len(l) == 1:
+        return l[0]
+    for i, x in enumerate(l):
+        sub_l = permute(l[:i]+l[i+1:])
+        if isinstance(sub_l, list):
+            for y in sub_l:
+                results.append([x]+y)
+        else:
+            results.append([x, sub_l])
+    return results
