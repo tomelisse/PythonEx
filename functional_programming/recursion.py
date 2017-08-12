@@ -4,14 +4,24 @@ from os import listdir
 from os.path import isfile
 import time
 
+def compute(f, x):
+    ''' trace helper for printing and calling f '''
+    print f.indent*'| ' + '|--' ,f.__name__, x
+    f.indent += 1
+    return f(x)
+
 def trace(f):
     ''' decorator for tracing function calls '''
-    f.indent = 0
-    def g(*x):
-        print f.indent*'| ' + '|--' ,f.__name__, x
-        f.indent += 1
-        value = f(*x)
-        # print f.indent*'| ' + '|--','return ', value
+    computed = set()
+    def g(x):
+        if f not in computed:
+            f.indent = 0
+            computed.add(f)
+            value = compute(f, x)
+            f.indent = 0
+            computed.remove(f)
+        else:
+            value = compute(f, x)
         return value
     return g
 
@@ -24,6 +34,23 @@ def memoize(f):
             cache[x] = f(x)
         return cache[x]
     return g   
+
+def my_profile(f):
+    ''' prints the time consument in executing function f '''
+    computed = set()
+    def g(x):
+        if f in computed:
+            # if f is already being executed, don't measure time
+            return f(x)
+        else:
+            start = time.clock()
+            computed.add(f)
+            result = f(x)
+            computed.remove(f)
+            stop = time.clock()
+            print 'time taken: {} sec'.format(stop - start)
+            return result
+    return g
 
 def profile(f):
     ''' prints the time consumed in executing f '''
@@ -159,8 +186,8 @@ def permute(l):
             results.append([x, sub_l])
     return results
 
-@profile
-@memoize
+@my_profile
+# @memoize
 @trace
 def fib(n):
     ''' returns nth Fibonacci number '''
