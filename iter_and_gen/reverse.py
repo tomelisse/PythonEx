@@ -1,4 +1,5 @@
 class reverse_iter:
+    ''' takes a list and iterates it from the reverse direction '''
     def __init__(self, n):
         self.i = n
 

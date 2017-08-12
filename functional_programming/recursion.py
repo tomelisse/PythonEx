@@ -1,3 +1,5 @@
+''' recursion and decorators exercises from : '''
+''' http://anandology.com/python-practice-book/functional-programming.html '''
 from os import listdir
 from os.path import isfile
 import time
