@@ -35,7 +35,7 @@ def memoize(f):
         return cache[x]
     return g   
 
-def my_profile(f):
+def profile(f):
     ''' prints the time consument in executing function f '''
     computed = set()
     def g(x):
@@ -50,23 +50,6 @@ def my_profile(f):
             stop = time.clock()
             print 'time taken: {} sec'.format(stop - start)
             return result
-    return g
-
-def profile(f):
-    ''' prints the time consumed in executing f '''
-    ''' ??? '''
-    # f.start = 1000
-    # f.stop  = 0
-    def g(x):
-        start = time.time()
-        # if start < f.start:
-        #     f.start = start
-        result = f(x)
-        stop = time.time()
-        # if stop > f.stop:
-        #     f.stop = stop
-        print stop - start
-        return result
     return g
 
 def vectorize(f):
@@ -186,8 +169,8 @@ def permute(l):
             results.append([x, sub_l])
     return results
 
-@my_profile
-# @memoize
+@profile
+@memoize
 @trace
 def fib(n):
     ''' returns nth Fibonacci number '''
